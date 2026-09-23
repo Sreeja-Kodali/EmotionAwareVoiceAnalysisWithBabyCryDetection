@@ -1,219 +1,120 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voice Emotion & Baby Cry Detector</title>
+    <meta name="theme-color" content="#071a31">
+    <title>Emotion-Aware Voice Analysis</title>
     <style>
-        /* Base Styles */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        }
-
-        /* Animated Stickers */
-        .sticker {
-            position: fixed;
-            z-index: 0;
-            opacity: 0.7;
-            animation: float 15s infinite ease-in-out;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
-            will-change: transform;
-            pointer-events: none;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-30px) rotate(5deg); }
-        }
-
-        /* Individual Sticker Positions */
-        #music-note { width: 80px; top: 10%; left: 5%; animation-delay: 0s; }
-        #microphone { width: 100px; top: 75%; left: 80%; animation-delay: 2s; }
-        #sound-wave { width: 90px; top: 25%; left: 82%; animation-delay: 4s; }
-        #happy-face { width: 80px; top: 65%; left: 10%; animation-delay: 1s; }
-        #sad-face { width: 80px; top: 15%; left: 85%; animation-delay: 3s; }
-        #angry-face { width: 80px; top: 80%; left: 15%; animation-delay: 5s; }
-        #baby-bottle { width: 100px; top: 30%; left: 8%; animation-delay: 6s; }
-        #baby-face { width: 90px; top: 70%; left: 83%; animation-delay: 7s; }
-        #crying-baby { width: 80px; top: 85%; left: 80%; animation-delay: 8s; }
-
-        /* Main Container */
-        #container {
-            background-color: rgba(255, 255, 255, 0.9);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 90%;
-            max-width: 500px;
-            margin: 30px auto;
-            backdrop-filter: blur(5px);
-            position: relative;
-            z-index: 1;
-        }
-
-        /* UI Elements */
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 25px;
-        }
-        #audioFile {
-            margin: 20px 0;
-            width: 100%;
-            padding: 10px;
-            border: 2px dashed #3498db;
-            border-radius: 6px;
-            background: rgba(255,255,255,0.5);
-        }
-        #predictButton {
-            background-color: #3498db;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-        #predictButton:hover {
-            background-color: #2980b9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        #predictButton:disabled {
-            background-color: #95a5a6;
-            cursor: not-allowed;
-        }
-
-        /* Result Styles */
-        .result-box {
-            margin-top: 25px;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: left;
-        }
-        .adult-result {
-            border-left: 4px solid #2ecc71;
-            background-color: rgba(46, 204, 113, 0.1);
-        }
-        .baby-result {
-            border-left: 4px solid #e74c3c;
-            background-color: rgba(231, 76, 60, 0.1);
-        }
-        .error-box {
-            border-left: 4px solid #f39c12;
-            background-color: rgba(243, 156, 18, 0.1);
-        }
-        .spinner {
-            border: 4px solid rgba(0,0,0,0.1);
-            border-top: 4px solid #3498db;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-            margin-right: 10px;
-            vertical-align: middle;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        :root { --navy: #071a31; --navy-soft: #102b4b; --blue: #4ca7ff; --cyan: #75e1e7; --ink: #10233c; --muted: #65758b; --panel: rgba(255, 255, 255, .92); --shadow: 0 24px 70px rgba(7, 26, 49, .14); }
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { margin: 0; color: var(--ink); font-family: "Trebuchet MS", "Segoe UI", sans-serif; background: #edf5fb; overflow-x: hidden; }
+        body::before { content: ""; position: fixed; inset: 0; z-index: -2; background: radial-gradient(circle at 10% 5%, rgba(117, 225, 231, .28), transparent 28%), radial-gradient(circle at 90% 18%, rgba(76, 167, 255, .2), transparent 30%), linear-gradient(145deg, #f7fbff 0%, #e8f2fa 52%, #dcecf7 100%); }
+        body::after { content: ""; position: fixed; width: 520px; height: 520px; right: -230px; bottom: -260px; border: 1px solid rgba(76, 167, 255, .18); border-radius: 50%; box-shadow: 0 0 0 55px rgba(76, 167, 255, .05), 0 0 0 110px rgba(76, 167, 255, .04); z-index: -1; }
+        .shell { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
+        .topbar { display: flex; justify-content: space-between; align-items: center; padding: 28px 0; }
+        .brand { display: flex; align-items: center; gap: 12px; color: var(--navy); font-weight: 800; letter-spacing: .02em; }
+        .brand-mark { width: 38px; height: 38px; display: grid; place-items: center; color: white; border-radius: 12px; background: var(--navy); box-shadow: 0 8px 18px rgba(7, 26, 49, .2); }
+        .brand-mark::before { content: "~"; font-size: 30px; line-height: 1; transform: rotate(-12deg); }
+        .status { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+        .status i { width: 8px; height: 8px; border-radius: 50%; background: #45c6bd; box-shadow: 0 0 0 5px rgba(69, 198, 189, .15); }
+        .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 60px; align-items: center; padding: 54px 0 78px; }
+        .eyebrow { color: #237ec5; font-size: 12px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+        h1 { max-width: 700px; margin: 15px 0 18px; color: var(--navy); font-family: Georgia, serif; font-size: clamp(42px, 6vw, 76px); font-weight: 500; letter-spacing: -.04em; line-height: .98; }
+        .hero-copy { max-width: 590px; color: var(--muted); font-size: 18px; line-height: 1.65; }
+        .hero-copy strong { color: var(--ink); font-weight: 700; }
+        .hero-visual { min-height: 280px; position: relative; display: grid; place-items: center; }
+        .orb { width: min(280px, 70vw); aspect-ratio: 1; border-radius: 50%; background: linear-gradient(145deg, #c7f5f2, #83caff); box-shadow: inset -30px -28px 70px rgba(20, 100, 168, .17), 0 26px 55px rgba(45, 121, 178, .2); animation: drift 7s ease-in-out infinite; }
+        .orb::before, .orb::after { content: ""; position: absolute; border: 1px solid rgba(7, 26, 49, .18); border-radius: 50%; transform: rotate(-25deg); }
+        .orb::before { width: 310px; height: 125px; }
+        .orb::after { width: 170px; height: 310px; }
+        .signal { position: absolute; display: flex; align-items: center; gap: 7px; height: 90px; }
+        .signal span { display: block; width: 5px; border-radius: 5px; background: var(--navy); animation: pulse 1.3s ease-in-out infinite alternate; }
+        .signal span:nth-child(1), .signal span:nth-child(7) { height: 22px; }
+        .signal span:nth-child(2), .signal span:nth-child(6) { height: 43px; animation-delay: .15s; }
+        .signal span:nth-child(3), .signal span:nth-child(5) { height: 65px; animation-delay: .3s; }
+        .signal span:nth-child(4) { height: 88px; background: #fff; animation-delay: .45s; }
+        .workspace { display: grid; grid-template-columns: 1.05fr .95fr; gap: 22px; align-items: start; }
+        .panel { border: 1px solid rgba(255, 255, 255, .8); border-radius: 24px; background: var(--panel); box-shadow: var(--shadow); backdrop-filter: blur(12px); }
+        .analyzer { padding: 30px; }
+        .panel-heading { display: flex; justify-content: space-between; align-items: start; gap: 18px; margin-bottom: 22px; }
+        h2 { margin: 0; color: var(--navy); font-size: 24px; letter-spacing: -.02em; }
+        .panel-heading p { margin: 7px 0 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+        .badge { padding: 8px 11px; border: 1px solid #bfdbf3; border-radius: 999px; color: #2576b9; background: #eef8ff; font-size: 11px; font-weight: 800; white-space: nowrap; }
+        .dropzone { min-height: 195px; display: grid; place-items: center; padding: 24px; border: 1.5px dashed #8abbe5; border-radius: 17px; text-align: center; background: linear-gradient(135deg, #f5fbff, #edf9f8); transition: border-color .2s, background .2s, transform .2s; }
+        .dropzone:hover, .dropzone.is-dragging { border-color: var(--blue); background: #e9f6ff; transform: translateY(-2px); }
+        .upload-icon { width: 48px; height: 48px; margin: 0 auto 12px; display: grid; place-items: center; border-radius: 15px; color: white; background: var(--navy-soft); font-size: 24px; }
+        .dropzone strong { display: block; color: var(--navy); font-size: 16px; }
+        .dropzone p { margin: 7px 0 14px; color: var(--muted); font-size: 13px; }
+        .browse { color: #1477c4; font-weight: 800; cursor: pointer; }
+        #audioFile { position: absolute; width: 1px; height: 1px; opacity: 0; }
+        .file-meta { display: none; align-items: center; justify-content: space-between; gap: 12px; margin-top: 15px; padding: 13px 15px; border-radius: 12px; color: var(--navy); background: #f2f7fb; font-size: 13px; }
+        .file-meta.visible { display: flex; }
+        .file-meta span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        audio { width: 100%; height: 34px; margin-top: 14px; display: none; }
+        audio.visible { display: block; }
+        .primary-button { width: 100%; margin-top: 19px; padding: 15px 18px; border: 0; border-radius: 13px; color: white; background: var(--navy); font: inherit; font-weight: 800; cursor: pointer; transition: transform .2s, box-shadow .2s, background .2s; }
+        .primary-button:hover:not(:disabled) { background: #12365d; box-shadow: 0 12px 24px rgba(7, 26, 49, .2); transform: translateY(-2px); }
+        .primary-button:disabled { cursor: wait; opacity: .7; }
+        .loader { display: inline-block; width: 15px; height: 15px; margin-right: 8px; border: 2px solid rgba(255,255,255,.35); border-top-color: white; border-radius: 50%; vertical-align: -2px; animation: spin .8s linear infinite; }
+        .results { min-height: 185px; padding: 30px; }
+        .empty-state { display: grid; min-height: 125px; place-items: center; color: #8293a5; text-align: center; }
+        .empty-state span { display: block; margin-bottom: 8px; color: #b4c8d9; font-size: 38px; }
+        .result-card { padding: 20px; border-radius: 16px; background: #f3f8fc; animation: reveal .35s ease both; }
+        .result-card.error { border-left: 4px solid #d8705f; background: #fff5f1; }
+        .result-card.success { border-left: 4px solid #37b7ad; }
+        .result-label { margin: 0 0 8px; color: var(--muted); font-size: 11px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+        .result-card h3 { margin: 0 0 18px; color: var(--navy); font-size: 24px; text-transform: capitalize; }
+        .result-detail { display: flex; justify-content: space-between; gap: 20px; padding-top: 13px; border-top: 1px solid #dce8f1; font-size: 14px; }
+        .result-detail strong { color: var(--navy); text-transform: capitalize; }
+        .error-message { margin: 0; color: #9f483d; line-height: 1.5; }
+        .workflow-section { padding: 86px 0 28px; }
+        .section-intro { max-width: 550px; margin-bottom: 28px; }
+        .section-intro h2 { margin-top: 9px; font-family: Georgia, serif; font-size: 38px; font-weight: 500; }
+        .workflow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+        .step { position: relative; padding: 20px 14px; border-top: 2px solid #9cccec; }
+        .step::after { content: ">"; position: absolute; top: 19px; right: -10px; color: #6eafd8; font-size: 20px; }
+        .step:last-child::after { display: none; }
+        .step-number { color: #2781c8; font-size: 11px; font-weight: 800; letter-spacing: .1em; }
+        .step h3 { margin: 10px 0 8px; color: var(--navy); font-size: 15px; }
+        .step p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+        .info-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; padding: 28px 0 86px; }
+        .info-card { min-height: 180px; padding: 22px; border-radius: 17px; background: var(--navy); color: white; transition: transform .2s, background .2s; }
+        .info-card:hover { background: #10365d; transform: translateY(-5px); }
+        .info-card:nth-child(2) { background: #15517e; }
+        .info-card:nth-child(3) { background: #1b657e; }
+        .info-card:nth-child(4) { background: #164c68; }
+        .info-card .card-icon { color: var(--cyan); font-size: 24px; }
+        .info-card h3 { margin: 22px 0 8px; font-size: 16px; }
+        .info-card p { margin: 0; color: #c9e1ef; font-size: 13px; line-height: 1.55; }
+        footer { padding: 20px 0 30px; border-top: 1px solid rgba(125, 164, 193, .25); color: var(--muted); font-size: 12px; }
+        @keyframes drift { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-12px) rotate(3deg); } }
+        @keyframes pulse { to { transform: scaleY(.45); opacity: .65; } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes reveal { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 820px) { .hero, .workspace { grid-template-columns: 1fr; gap: 28px; } .hero { padding-top: 28px; } .hero-visual { min-height: 220px; } .workflow { grid-template-columns: repeat(3, 1fr); } .step:nth-child(3)::after { display: none; } .info-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 560px) { .shell { width: min(100% - 28px, 1180px); } .topbar { padding: 18px 0; } .status { display: none; } h1 { font-size: 46px; } .analyzer, .results { padding: 22px; } .workflow, .info-grid { grid-template-columns: 1fr; } .step::after { content: "v"; top: auto; right: auto; bottom: -14px; left: 14px; } .step:nth-child(3)::after { display: block; } .step:last-child::after { display: none; } .info-card { min-height: 145px; } }
     </style>
 </head>
 <body>
-    <!-- Animated Stickers -->
-    <img src="https://cdn-icons-png.flaticon.com/512/3565/3565418.png" class="sticker" id="music-note" alt="Music Note">
-    <img src="https://cdn-icons-png.flaticon.com/512/2933/2933245.png" class="sticker" id="microphone" alt="Microphone">
-    <img src="https://cdn-icons-png.flaticon.com/512/7288/7288824.png" class="sticker" id="sound-wave" alt="Sound Wave">
-    <img src="https://cdn-icons-png.flaticon.com/512/742/742751.png" class="sticker" id="happy-face" alt="Happy Face">
-    <img src="https://cdn-icons-png.flaticon.com/512/742/742764.png" class="sticker" id="sad-face" alt="Sad Face">
-    <img src="https://cdn-icons-png.flaticon.com/512/742/742807.png" class="sticker" id="angry-face" alt="Angry Face">
-    <img src="https://cdn-icons-png.flaticon.com/512/1864/1864593.png" class="sticker" id="baby-bottle" alt="Baby Bottle">
-    <img src="https://cdn-icons-png.flaticon.com/512/1864/1864589.png" class="sticker" id="baby-face" alt="Baby Face">
-    <img src="https://cdn-icons-png.flaticon.com/512/3048/3048127.png" class="sticker" id="crying-baby" alt="Crying Baby">
-
-    <!-- Main Content Container -->
-    <div id="container">
-        <h1>Voice Emotion & Baby Cry Detector</h1>
-        <input type="file" id="audioFile" accept=".wav" />
-        <button id="predictButton">Analyze Audio</button>
-        <div id="result"></div>
-    </div>
-
-    <!-- JavaScript -->
+    <header class="shell topbar"><div class="brand"><span class="brand-mark" aria-hidden="true"></span><span>VOICE / INSIGHT LAB</span></div><div class="status"><i></i> Analysis workspace ready</div></header>
+    <main>
+        <section class="shell hero"><div><div class="eyebrow">Deep learning audio intelligence</div><h1>Emotion-Aware Voice Analysis with Baby Cry Detection</h1><p class="hero-copy"><strong>An intelligent deep learning system for speech emotion recognition and infant cry analysis.</strong> Upload a WAV sample and let the trained models identify the voice category and its most likely emotional signal.</p></div><div class="hero-visual" aria-hidden="true"><div class="orb"></div><div class="signal"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div></section>
+        <section class="shell workspace" id="analyzer"><div class="panel analyzer"><div class="panel-heading"><div><h2>Analyze an audio sample</h2><p>Drop a WAV file here to begin your analysis.</p></div><span class="badge">WAV ONLY</span></div><div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Choose a WAV audio file"><div><div class="upload-icon" aria-hidden="true">UP</div><strong>Drag and drop your file</strong><p>or <label class="browse" for="audioFile">browse from your device</label></p><small>Maximum compatibility with .wav audio</small></div></div><input type="file" id="audioFile" accept=".wav,audio/wav,audio/x-wav"><div class="file-meta" id="fileMeta"><span id="fileName"></span><span id="fileSize"></span></div><audio id="audioPreview" controls></audio><button class="primary-button" id="predictButton" type="button">Analyze audio</button></div><div class="panel results" aria-live="polite"><div class="panel-heading"><div><h2>Prediction result</h2><p>Model output will appear here.</p></div></div><div id="result"><div class="empty-state"><div><span>--</span><div>Waiting for an audio sample</div></div></div></div></div></section>
+        <section class="shell workflow-section"><div class="section-intro"><div class="eyebrow">From signal to insight</div><h2>One audio pipeline, two kinds of understanding.</h2></div><div class="workflow"><div class="step"><div class="step-number">01</div><h3>Audio Input</h3><p>Receive a clean WAV recording.</p></div><div class="step"><div class="step-number">02</div><h3>Preprocessing</h3><p>Prepare the signal for analysis.</p></div><div class="step"><div class="step-number">03</div><h3>Feature Extraction</h3><p>Capture MFCC, chroma, and mel features.</p></div><div class="step"><div class="step-number">04</div><h3>Deep Learning Model</h3><p>Classify the voice and emotional pattern.</p></div><div class="step"><div class="step-number">05</div><h3>Prediction</h3><p>Return a readable, confidence-aware result.</p></div></div></section>
+        <section class="shell info-grid" aria-label="Project capabilities"><article class="info-card"><div class="card-icon">01</div><h3>MFCC</h3><p>Captures the spectral shape of speech in a compact representation.</p></article><article class="info-card"><div class="card-icon">02</div><h3>Chroma Features</h3><p>Summarizes the distribution of audio energy across pitch classes.</p></article><article class="info-card"><div class="card-icon">03</div><h3>Mel Spectrogram</h3><p>Maps frequency energy onto a perceptual scale for richer audio context.</p></article><article class="info-card"><div class="card-icon">04</div><h3>Deep Learning Model</h3><p>Combines extracted features to classify adult speech and infant cries.</p></article></section>
+    </main>
+    <footer><div class="shell">Emotion-Aware Voice Analysis - Deep Learning Demonstration</div></footer>
     <script>
-        const predictButton = document.getElementById('predictButton');
-        const fileInput = document.getElementById('audioFile');
-        const resultDiv = document.getElementById('result');
-
-        predictButton.addEventListener('click', async () => {
-            if (!fileInput.files.length) {
-                resultDiv.innerHTML = `
-                    <div class="result-box error-box">
-                        <p>⚠️ Please select a .wav file first</p>
-                    </div>
-                `;
-                return;
-            }
-
-            predictButton.disabled = true;
-            predictButton.textContent = 'Processing...';
-           
-            resultDiv.innerHTML = `
-                <div style="display: flex; align-items: center; justify-content: center;">
-                    <div class="spinner"></div>
-                    <span>Analyzing audio sample...</span>
-                </div>
-            `;
-
-            try {
-                const formData = new FormData();
-                formData.append('audio', fileInput.files[0]);
-
-                const response = await fetch('/predict', {
-                    method: 'POST',
-                    body: formData
-                });
-               
-                const data = await response.json();
-
-                if (data.error) {
-                    resultDiv.innerHTML = `
-                        <div class="result-box error-box">
-                            <p>⚠️ Error: ${data.error}</p>
-                        </div>
-                    `;
-                } else if (data.type === 'adult') {
-                    resultDiv.innerHTML = `
-                        <div class="result-box adult-result">
-                            <h3>🗣️ Adult Voice Detected</h3>
-                            <p><strong>Emotion:</strong> ${data.emotion}</p>
-                        </div>
-                    `;
-                } else {
-                    resultDiv.innerHTML = `
-                        <div class="result-box baby-result">
-                            <h3>👶 Baby Cry Detected</h3>
-                            <p><strong>Reason:</strong> ${data.emotion}</p>
-                        </div>
-                    `;
-                }
-            } catch (error) {
-                resultDiv.innerHTML = `
-                    <div class="result-box error-box">
-                        <p>⚠️ Error: ${error.message}</p>
-                    </div>
-                `;
-            } finally {
-                predictButton.disabled = false;
-                predictButton.textContent = 'Analyze Audio';
-            }
-        });
+        const predictButton = document.getElementById('predictButton'); const fileInput = document.getElementById('audioFile'); const dropzone = document.getElementById('dropzone'); const resultDiv = document.getElementById('result'); const fileMeta = document.getElementById('fileMeta'); const fileName = document.getElementById('fileName'); const fileSize = document.getElementById('fileSize'); const audioPreview = document.getElementById('audioPreview');
+        function escapeHtml(value) { return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[character])); }
+        function showError(message) { resultDiv.innerHTML = `<div class="result-card error"><p class="result-label">Analysis unavailable</p><p class="error-message">${escapeHtml(message)}</p></div>`; }
+        function setFile(file) { if (!file) return; if (!file.name.toLowerCase().endsWith('.wav')) { fileInput.value = ''; fileMeta.classList.remove('visible'); audioPreview.classList.remove('visible'); showError('Unsupported file format. Please choose a .wav audio file.'); return; } const transfer = new DataTransfer(); transfer.items.add(file); fileInput.files = transfer.files; fileName.textContent = file.name; fileSize.textContent = `${(file.size / 1024).toFixed(1)} KB`; fileMeta.classList.add('visible'); audioPreview.src = URL.createObjectURL(file); audioPreview.classList.add('visible'); resultDiv.innerHTML = '<div class="empty-state"><div><span>o</span><div>Ready when you are</div></div></div>'; }
+        function confidenceLabel(scores) { if (!Array.isArray(scores) || !scores.length) return ''; const highest = Math.max(...scores); return `<div class="result-detail"><span>Model confidence</span><strong>${(highest * 100).toFixed(1)}%</strong></div>`; }
+        fileInput.addEventListener('change', () => setFile(fileInput.files[0])); dropzone.addEventListener('click', () => fileInput.click()); dropzone.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') fileInput.click(); }); ['dragenter', 'dragover'].forEach(eventName => dropzone.addEventListener(eventName, event => { event.preventDefault(); dropzone.classList.add('is-dragging'); })); ['dragleave', 'drop'].forEach(eventName => dropzone.addEventListener(eventName, event => { event.preventDefault(); dropzone.classList.remove('is-dragging'); })); dropzone.addEventListener('drop', event => setFile(event.dataTransfer.files[0]));
+        predictButton.addEventListener('click', async () => { const file = fileInput.files[0]; if (!file) { showError('Please choose a WAV file before starting the analysis.'); return; } if (!file.name.toLowerCase().endsWith('.wav')) { showError('Unsupported file format. Please choose a .wav audio file.'); return; } predictButton.disabled = true; predictButton.innerHTML = '<span class="loader"></span>Analyzing audio'; resultDiv.innerHTML = '<div class="empty-state"><div><span class="loader"></span><div>Extracting features and running the model...</div></div></div>'; try { const formData = new FormData(); formData.append('audio', file); const response = await fetch('/predict', { method: 'POST', body: formData }); const data = await response.json(); if (!response.ok || data.error) throw new Error(data.error || 'The backend could not process this audio file.'); const isAdult = data.type === 'adult'; const category = isAdult ? 'Adult Speech' : 'Infant Cry'; const detailLabel = isAdult ? 'Emotion' : 'Cry category'; resultDiv.innerHTML = `<div class="result-card success"><p class="result-label">Detected audio category</p><h3>${category}</h3><div class="result-detail"><span>${detailLabel}</span><strong>${escapeHtml(data.emotion || 'Unknown')}</strong></div>${confidenceLabel(data.confidence_scores)}</div>`; } catch (error) { showError(error.message || 'Backend prediction failed. Please try again.'); } finally { predictButton.disabled = false; predictButton.textContent = 'Analyze audio'; } });
     </script>
 </body>
 </html>
+
