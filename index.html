@@ -13,10 +13,7 @@
         body::before { content: ""; position: fixed; inset: 0; z-index: -2; background: radial-gradient(circle at 10% 5%, rgba(117, 225, 231, .28), transparent 28%), radial-gradient(circle at 90% 18%, rgba(76, 167, 255, .2), transparent 30%), linear-gradient(145deg, #f7fbff 0%, #e8f2fa 52%, #dcecf7 100%); }
         body::after { content: ""; position: fixed; width: 520px; height: 520px; right: -230px; bottom: -260px; border: 1px solid rgba(76, 167, 255, .18); border-radius: 50%; box-shadow: 0 0 0 55px rgba(76, 167, 255, .05), 0 0 0 110px rgba(76, 167, 255, .04); z-index: -1; }
         .shell { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
-        .topbar { display: flex; justify-content: space-between; align-items: center; padding: 28px 0; }
-        .brand { display: flex; align-items: center; gap: 12px; color: var(--navy); font-weight: 800; letter-spacing: .02em; }
-        .brand-mark { width: 38px; height: 38px; display: grid; place-items: center; color: white; border-radius: 12px; background: var(--navy); box-shadow: 0 8px 18px rgba(7, 26, 49, .2); }
-        .brand-mark::before { content: "~"; font-size: 30px; line-height: 1; transform: rotate(-12deg); }
+        .topbar { display: flex; justify-content: space-between; align-items: center; padding: 16px 0 10px; }
         .status { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
         .status i { width: 8px; height: 8px; border-radius: 50%; background: #45c6bd; box-shadow: 0 0 0 5px rgba(69, 198, 189, .15); }
         .hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 60px; align-items: center; padding: 54px 0 78px; }
@@ -69,43 +66,22 @@
         .result-detail { display: flex; justify-content: space-between; gap: 20px; padding-top: 13px; border-top: 1px solid #dce8f1; font-size: 14px; }
         .result-detail strong { color: var(--navy); text-transform: capitalize; }
         .error-message { margin: 0; color: #9f483d; line-height: 1.5; }
-        .workflow-section { padding: 86px 0 28px; }
-        .section-intro { max-width: 550px; margin-bottom: 28px; }
-        .section-intro h2 { margin-top: 9px; font-family: Georgia, serif; font-size: 38px; font-weight: 500; }
-        .workflow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
-        .step { position: relative; padding: 20px 14px; border-top: 2px solid #9cccec; }
-        .step::after { content: ">"; position: absolute; top: 19px; right: -10px; color: #6eafd8; font-size: 20px; }
-        .step:last-child::after { display: none; }
-        .step-number { color: #2781c8; font-size: 11px; font-weight: 800; letter-spacing: .1em; }
-        .step h3 { margin: 10px 0 8px; color: var(--navy); font-size: 15px; }
-        .step p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
-        .info-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; padding: 28px 0 86px; }
-        .info-card { min-height: 180px; padding: 22px; border-radius: 17px; background: var(--navy); color: white; transition: transform .2s, background .2s; }
-        .info-card:hover { background: #10365d; transform: translateY(-5px); }
-        .info-card:nth-child(2) { background: #15517e; }
-        .info-card:nth-child(3) { background: #1b657e; }
-        .info-card:nth-child(4) { background: #164c68; }
-        .info-card .card-icon { color: var(--cyan); font-size: 24px; }
-        .info-card h3 { margin: 22px 0 8px; font-size: 16px; }
-        .info-card p { margin: 0; color: #c9e1ef; font-size: 13px; line-height: 1.55; }
-        footer { padding: 20px 0 30px; border-top: 1px solid rgba(125, 164, 193, .25); color: var(--muted); font-size: 12px; }
+        footer { padding: 12px 0 22px; border-top: 1px solid rgba(125, 164, 193, .25); color: var(--muted); font-size: 12px; }
         @keyframes drift { 0%, 100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-12px) rotate(3deg); } }
         @keyframes pulse { to { transform: scaleY(.45); opacity: .65; } }
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes reveal { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        @media (max-width: 820px) { .hero, .workspace { grid-template-columns: 1fr; gap: 28px; } .hero { padding-top: 28px; } .hero-visual { min-height: 220px; } .workflow { grid-template-columns: repeat(3, 1fr); } .step:nth-child(3)::after { display: none; } .info-grid { grid-template-columns: repeat(2, 1fr); } }
-        @media (max-width: 560px) { .shell { width: min(100% - 28px, 1180px); } .topbar { padding: 18px 0; } .status { display: none; } h1 { font-size: 46px; } .analyzer, .results { padding: 22px; } .workflow, .info-grid { grid-template-columns: 1fr; } .step::after { content: "v"; top: auto; right: auto; bottom: -14px; left: 14px; } .step:nth-child(3)::after { display: block; } .step:last-child::after { display: none; } .info-card { min-height: 145px; } }
+        @media (max-width: 820px) { .hero, .workspace { grid-template-columns: 1fr; gap: 28px; } .hero { padding-top: 28px; } .hero-visual { min-height: 220px; } }
+        @media (max-width: 560px) { .shell { width: min(100% - 28px, 1180px); } .topbar { padding: 18px 0; } .status { display: none; } h1 { font-size: 46px; } .analyzer, .results { padding: 22px; } }
     </style>
 </head>
 <body>
-    <header class="shell topbar"><div class="brand"><span class="brand-mark" aria-hidden="true"></span><span>VOICE / INSIGHT LAB</span></div><div class="status"><i></i> Analysis workspace ready</div></header>
+    <header class="shell topbar"></header>
     <main>
-        <section class="shell hero"><div><div class="eyebrow">Deep learning audio intelligence</div><h1>Emotion-Aware Voice Analysis with Baby Cry Detection</h1><p class="hero-copy"><strong>An intelligent deep learning system for speech emotion recognition and infant cry analysis.</strong> Upload a WAV sample and let the trained models identify the voice category and its most likely emotional signal.</p></div><div class="hero-visual" aria-hidden="true"><div class="orb"></div><div class="signal"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div></section>
+        <section class="shell hero"><div><h1>Emotion-Aware Voice Analysis with Baby Cry Detection</h1><p class="hero-copy"><strong>An intelligent deep learning system for speech emotion recognition and infant cry analysis.</strong> Upload a WAV sample and let the trained models identify the voice category and its most likely emotional signal.</p></div><div class="hero-visual" aria-hidden="true"><div class="orb"></div><div class="signal"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div></div></section>
         <section class="shell workspace" id="analyzer"><div class="panel analyzer"><div class="panel-heading"><div><h2>Analyze an audio sample</h2><p>Drop a WAV file here to begin your analysis.</p></div><span class="badge">WAV ONLY</span></div><div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Choose a WAV audio file"><div><div class="upload-icon" aria-hidden="true">UP</div><strong>Drag and drop your file</strong><p>or <label class="browse" for="audioFile">browse from your device</label></p><small>Maximum compatibility with .wav audio</small></div></div><input type="file" id="audioFile" accept=".wav,audio/wav,audio/x-wav"><div class="file-meta" id="fileMeta"><span id="fileName"></span><span id="fileSize"></span></div><audio id="audioPreview" controls></audio><button class="primary-button" id="predictButton" type="button">Analyze audio</button></div><div class="panel results" aria-live="polite"><div class="panel-heading"><div><h2>Prediction result</h2><p>Model output will appear here.</p></div></div><div id="result"><div class="empty-state"><div><span>--</span><div>Waiting for an audio sample</div></div></div></div></div></section>
-        <section class="shell workflow-section"><div class="section-intro"><div class="eyebrow">From signal to insight</div><h2>One audio pipeline, two kinds of understanding.</h2></div><div class="workflow"><div class="step"><div class="step-number">01</div><h3>Audio Input</h3><p>Receive a clean WAV recording.</p></div><div class="step"><div class="step-number">02</div><h3>Preprocessing</h3><p>Prepare the signal for analysis.</p></div><div class="step"><div class="step-number">03</div><h3>Feature Extraction</h3><p>Capture MFCC, chroma, and mel features.</p></div><div class="step"><div class="step-number">04</div><h3>Deep Learning Model</h3><p>Classify the voice and emotional pattern.</p></div><div class="step"><div class="step-number">05</div><h3>Prediction</h3><p>Return a readable, confidence-aware result.</p></div></div></section>
-        <section class="shell info-grid" aria-label="Project capabilities"><article class="info-card"><div class="card-icon">01</div><h3>MFCC</h3><p>Captures the spectral shape of speech in a compact representation.</p></article><article class="info-card"><div class="card-icon">02</div><h3>Chroma Features</h3><p>Summarizes the distribution of audio energy across pitch classes.</p></article><article class="info-card"><div class="card-icon">03</div><h3>Mel Spectrogram</h3><p>Maps frequency energy onto a perceptual scale for richer audio context.</p></article><article class="info-card"><div class="card-icon">04</div><h3>Deep Learning Model</h3><p>Combines extracted features to classify adult speech and infant cries.</p></article></section>
     </main>
-    <footer><div class="shell">Emotion-Aware Voice Analysis - Deep Learning Demonstration</div></footer>
+    <footer><div class="shell"></div></footer>
     <script>
         const predictButton = document.getElementById('predictButton'); const fileInput = document.getElementById('audioFile'); const dropzone = document.getElementById('dropzone'); const resultDiv = document.getElementById('result'); const fileMeta = document.getElementById('fileMeta'); const fileName = document.getElementById('fileName'); const fileSize = document.getElementById('fileSize'); const audioPreview = document.getElementById('audioPreview');
         function escapeHtml(value) { return String(value).replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[character])); }
